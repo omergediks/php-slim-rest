@@ -19,7 +19,9 @@ $app->get('/mesajlar', function (Request $request, Response $response) {
     try{
         $db = $db->connect();
 
-        $mesajlar = $db->query("SELECT * FROM feed")->fetchAll(PDO::FETCH_OBJ);
+        $mesajlar = $db->query("SELECT feed.feed_id, feed.feed, feed.user_id_fk, feed.created, users.username 
+            FROM feed 
+            JOIN users ON feed.user_id_fk = users.user_id")->fetchAll(PDO::FETCH_OBJ);
 
 		
 	
@@ -48,7 +50,10 @@ $app->get('/mesajlar/{id}', function (Request $request, Response $response) {
     $db = new Db();
     try{
         $db = $db->connect();
-        $mesajlar = $db->query("SELECT * FROM feed WHERE user_id_fk = $id")->fetchAll(PDO::FETCH_OBJ);
+        $mesajlar = $db->query("SELECT feed.feed_id, feed.feed, feed.user_id_fk, feed.created, users.username 
+            FROM feed 
+            JOIN users ON feed.user_id_fk = users.user_id
+            WHERE feed.user_id_fk = $id")->fetchAll(PDO::FETCH_OBJ);
 
         return $response
             ->withStatus(200)
